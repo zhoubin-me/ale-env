@@ -1,0 +1,1 @@
+ffmpeg -framerate 60 -i examples/frames/%05d.png -c:v libx264 -pix_fmt yuv420p -crf 23 output.mp4 -y

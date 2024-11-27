@@ -1,1 +1,4 @@
-/target
+target
+roms
+examples/frames
+*.mp4
