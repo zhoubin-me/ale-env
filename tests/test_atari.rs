@@ -1,5 +1,6 @@
 use ale_env::Atari;
 use colored::*;
+use rand::seq::SliceRandom;
 use core::num;
 use rand::rngs::StdRng;
 use rand::{thread_rng, Rng, SeedableRng};
@@ -13,13 +14,14 @@ fn test_atari() {
     let mut env = Atari::new("breakout", 100, true, Some(seed));
     let mut rng = StdRng::seed_from_u64(seed as u64);
 
-    let n = env.get_action_set().len();
+    let action_set = env.get_action_set();
     let mut total_reward = 0;
     let mut images = vec![];
     env.reset();
     let start = Instant::now();
     for _ in 0..steps {
-        let (reward, terminal, truncation, life_loss) = env.step(rng.gen_range(0..n));
+        let action = action_set.choose(&mut rng).expect("Random action failed");
+        let (reward, terminal, truncation, life_loss) = env.step(*action);
         total_reward += reward;
         if terminal {
             env.reset();
@@ -48,7 +50,7 @@ fn test_parallel_atari() {
         env.reset();
         envs.push(env);
     }
-    let n = envs[0].get_action_set().len();
+    let action_set = envs[0].get_action_set();
     let mut total_reward = 0;
     let mut images = vec![];
     let start = Instant::now();
@@ -56,8 +58,8 @@ fn test_parallel_atari() {
         let data = envs
             .par_iter_mut()
             .map(|env| {
-                let action = thread_rng().gen_range(0..n);
-                let (reward, terminal, truncation, life_loss) = env.step(action);
+                let action = action_set.choose(&mut thread_rng()).expect("Random action fail");
+                let (reward, terminal, truncation, life_loss) = env.step(*action);
                 if terminal {
                     env.reset();
                 }

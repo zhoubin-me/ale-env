@@ -105,12 +105,7 @@ impl Atari {
     }
 
     // return step information: (reward, terminal, truncation, life loss)
-    pub fn step(&mut self, action: usize) -> (i32, bool, bool, bool) {
-        let action = *self
-            .action_set
-            .iter()
-            .nth(action)
-            .expect("Action out of range");
+    pub fn step(&mut self, action: i32) -> (i32, bool, bool, bool) {
         let (reward, terminal, cur_lives) =
             unsafe { (act(self.ale, action), game_over(self.ale), lives(self.ale)) };
         self.frame_count += 1;

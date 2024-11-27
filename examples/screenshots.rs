@@ -1,6 +1,7 @@
 use ale_env::Atari;
 use image::{save_buffer, ColorType};
 use rand::rngs::StdRng;
+use rand::seq::SliceRandom;
 use rand::{thread_rng, Rng, SeedableRng};
 use std::time::Instant;
 use std::{env, fs};
@@ -10,7 +11,7 @@ fn main() {
     let steps = 10000;
 
     let mut env = Atari::new("breakout", 108_000, false, Some(seed));
-    let n = env.get_action_set().len();
+    let action_set = env.get_action_set();
     let mut images = vec![];
     env.reset();
     images.push(env.obs());
@@ -19,7 +20,8 @@ fn main() {
 
     let start = Instant::now();
     for _ in 0..steps {
-        let (reward, terminal, truncation, life_loss) = env.step(rng.gen_range(0..n));
+        let action = action_set.choose(&mut rng).expect("Random action failed");
+        let (reward, terminal, truncation, life_loss) = env.step(*action);
         images.push(env.obs());
         if terminal {
             env.reset();
