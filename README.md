@@ -15,10 +15,15 @@ Download roms first:
 bash scripts/download_roms.sh
 ```
 
-Run breakout examples under ```examples/screenshots```:
+Run breakout examples under ```examples/screenshots```, and generate video from frames:
 ```bash
 cargo run --release --example screenshots
 bash scripts/convert_frames_to_video.sh
+```
+
+Run test for FPS benchmark
+```bash
+cargo test -- --nocapture
 ```
 
 
