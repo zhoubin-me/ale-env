@@ -42,6 +42,8 @@ impl Atari {
             Ok(path) => println!("Current project path: {}", path.display()),
             Err(e) => eprintln!("Error retrieving project path: {}", e),
         }
+        let absolute_path = Path::new(env!("CARGO_MANIFEST_DIR")).join(current_file_path);
+        println!("Absolute path: {}", absolute_path.display());
         let cur_file = file!();
         let src_path = Path::new(cur_file)
             .parent()
