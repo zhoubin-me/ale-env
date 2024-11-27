@@ -3,7 +3,6 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 fn main() {
-
     // run cmake
     let root_dir = Path::new(&env!("CARGO_MANIFEST_DIR")).to_path_buf();
     let ale_dir = root_dir.join("ale");
@@ -50,7 +49,7 @@ fn main() {
                 "Script output:\n{}",
                 String::from_utf8_lossy(&output.stdout)
             );
-        },
+        }
         false => {
             eprintln!(
                 "Script failed with error:\n{}",

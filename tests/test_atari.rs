@@ -1,8 +1,7 @@
 use ale_env::Atari;
 use colored::*;
-use rand::seq::SliceRandom;
-use core::num;
 use rand::rngs::StdRng;
+use rand::seq::SliceRandom;
 use rand::{thread_rng, Rng, SeedableRng};
 use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
 use std::time::Instant;
@@ -58,7 +57,9 @@ fn test_parallel_atari() {
         let data = envs
             .par_iter_mut()
             .map(|env| {
-                let action = action_set.choose(&mut thread_rng()).expect("Random action fail");
+                let action = action_set
+                    .choose(&mut thread_rng())
+                    .expect("Random action fail");
                 let (reward, terminal, truncation, life_loss) = env.step(*action);
                 if terminal {
                     env.reset();
