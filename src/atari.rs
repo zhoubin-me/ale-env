@@ -2,8 +2,6 @@ use std::path::Path;
 use std::ffi::CString;
 use std::os::raw::c_int;
 use std::ptr::null_mut;
-use std::env;
-use rayon::iter::IntoParallelRefIterator;
 use tempdir;
 
 pub use crate::bindings::root::{
