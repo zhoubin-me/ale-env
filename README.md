@@ -6,7 +6,7 @@ A rust wrapper of [Arcade Learning Environment](https://github.com/Farama-Founda
 # Build and run
 Clone this repo:
 ```
-git clone https://github.com/zhoubin-me/ale-env.git
+git clone https://github.com/zhoubin-me/ale-env.git --recursive
 cd ale-env
 ```
 
