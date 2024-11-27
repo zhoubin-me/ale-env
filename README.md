@@ -3,7 +3,7 @@
 A rust wrapper of [Arcade Learning Environment](https://github.com/Farama-Foundation/Arcade-Learning-Environment).
 
 
-# Build and run
+# Build and Run
 Clone this repo:
 ```
 git clone https://github.com/zhoubin-me/ale-env.git --recursive
@@ -15,7 +15,7 @@ Download roms first:
 bash scripts/download_roms.sh
 ```
 
-Run breakout examples under ```examples/screenshots```, and generate video from frames:
+Run breakout example under ```examples/screenshots```, and generate a video from frames:
 ```bash
 cargo run --release --example screenshots
 bash scripts/convert_frames_to_video.sh
