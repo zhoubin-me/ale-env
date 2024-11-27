@@ -39,7 +39,6 @@ impl Atari {
         let des_path = dir.path().join(rom.filename());
 
         let cur_file = file!();
-        println!("Current file path: {}", cur_file);
         let src_path = Path::new(cur_file)
             .parent()
             .expect("Cannot find src directory")
