@@ -2,7 +2,7 @@ use ale_env::Atari;
 use colored::*;
 use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
-use rand::{thread_rng, Rng, SeedableRng};
+use rand::{thread_rng, SeedableRng};
 use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
 use std::time::Instant;
 

@@ -2,7 +2,7 @@ use ale_env::Atari;
 use image::{save_buffer, ColorType};
 use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
-use rand::{thread_rng, Rng, SeedableRng};
+use rand::SeedableRng;
 use std::time::Instant;
 use std::{env, fs};
 
