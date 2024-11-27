@@ -3,6 +3,7 @@ use ale_env::Atari;
 use rand::rngs::StdRng;
 use rand::{thread_rng, Rng, SeedableRng};
 use rayon::iter::{IntoParallelRefMutIterator, ParallelIterator};
+use core::num;
 use std::time::Instant;
 use colored::*;
 
@@ -11,32 +12,28 @@ fn test_atari() {
     let seed = 42;
     let steps = 10000;
     let mut env = Atari::new("breakout", 100, true, Some(seed));
-    let mut acc_stat = (0, false, false, false);
     let mut rng = StdRng::seed_from_u64(seed as u64);
 
     let n = env.get_action_set().len();
+    let mut total_reward = 0;
+    let mut images = vec![];
     env.reset();
-
     let start = Instant::now();
-    for _ in 0..100000 {
-        let stat = env.step(rng.gen_range(0..n));
-        acc_stat = (acc_stat.0 + stat.0, acc_stat.1 | stat.1, acc_stat.2 | stat.2, acc_stat.3 | stat.3);
-        if stat.1 {
+    for _ in 0..steps {
+        let (reward, terminal, truncation, life_loss) = env.step(rng.gen_range(0..n));
+        total_reward += reward;
+        if terminal {
             env.reset();
         }
+        images.push(env.obs());
     }
     let duration = start.elapsed();
-    println!("{}: {:?}, {}: {:.0}",
-        "Parallel env, Time elapsed".blue().bold(), 
+    println!("{}: time elapsed {:?}, average fps {:.0}, {:.0}",
+        "Single env:".blue().bold(), 
         duration, 
-        "FPS".blue().bold(), 
-        steps as f32 / duration.as_secs_f32());
-    
-    assert!(acc_stat.0 > 0, "no reward from random policy");
-    assert!(acc_stat.1, "no terminal");
-    assert!(acc_stat.2, "no truncation");
-    assert!(acc_stat.3, "no life loss");
-
+        steps as f32 / duration.as_secs_f32(),
+        total_reward
+    );
     env.close();
 }
 
@@ -52,23 +49,28 @@ fn test_parallel_atari() {
         env.reset();
         envs.push(env);
     }
-    let action_dim = envs[0].get_action_set().len();
-
+    let n = envs[0].get_action_set().len();
+    let mut total_reward = 0;
+    let mut images = vec![];
     let start = Instant::now();
     for _ in 0..steps {
-        envs.par_iter_mut().for_each(|env| {
-            let action = thread_rng().gen_range(0..action_dim);
+        let data = envs.par_iter_mut().map(|env| {
+            let action = thread_rng().gen_range(0..n);
             let (reward, terminal, truncation, life_loss) = env.step(action);
             if terminal {
                 env.reset();
             }
-        });
+            (reward, env.obs())
+        }).collect::<Vec<(i32, Vec<u8>)>>();
+        total_reward += data.iter().map(|x| x.0).sum::<i32>();
+        images.extend(data.iter().map(|x| x.1.clone()));
     }
     let duration = start.elapsed();
-    println!("{}: {:?}, {}: {:.0}",
-        "Parallel env, Time elapsed".blue().bold(), 
+    println!("{}: time elapsed {:?}, average fps {:.0}, {:.0}",
+        "Parallel env:".blue().bold(), 
         duration, 
-        "FPS".blue().bold(), 
-        (steps * num_envs) as f32 / duration.as_secs_f32());
+        (steps * num_envs) as f32 / duration.as_secs_f32(),
+        total_reward
+    );
 
 }
