@@ -1,3 +1,4 @@
+use std::path::Path;
 use std::ffi::CString;
 use std::os::raw::c_int;
 use std::ptr::null_mut;
@@ -36,8 +37,8 @@ impl Atari {
         let dir = tempdir::TempDir::new("ale-rs").expect("Create temp dir failed");
         let rom = BundledRom::name2rom(game);
         let des_path = dir.path().join(rom.filename());
-        let src_path = std::env::current_dir()
-            .expect("Cannot find project path")
+        let proj_dir = std::env::var("CARGO_MANIFEST_DIR").expect("Cannot open project dir");
+        let src_path = Path::new(proj_dir)
             .join("roms")
             .join(rom.filename());
         std::fs::copy(&src_path, &des_path).expect("Copy ROM to tempdir failed");
