@@ -1,6 +1,6 @@
 
 use std::{fs, env};
-use ale_env::{Atari, BundledRom};
+use ale_env::Atari;
 use rand::{thread_rng, Rng};
 use image::{save_buffer, ColorType};
 use std::time::Instant;
@@ -8,17 +8,16 @@ use std::time::Instant;
 fn main () {
 
     let mut env = Atari::new(
-        BundledRom::Breakout,
+        "breakout",
         108_000,
         false,
         Some(42)
     );
-    let n = env.action_dim();
+    let n = env.get_action_set().len();
     let steps = 10000;
     let mut images = vec![];
     env.reset();
     images.push(env.obs());
-    
 
     let start = Instant::now();
     for _ in 0..steps {
@@ -27,7 +26,7 @@ fn main () {
         images.push(env.obs());
     }
     let duration = start.elapsed();
-    println!("FPS: {:.0}", steps as f32 / duration.as_secs_f32());
+    println!("Time elapsed: {:?}, FPS: {:.0}", duration, steps as f32 / duration.as_secs_f32());
     println!("action set:{:?}", env.get_action_set());
 
     let (height, width) = env.screen_dim();

@@ -32,9 +32,10 @@ unsafe impl Send for Atari {}
 
 
 impl Atari {
-    pub fn new(rom: BundledRom, max_frames: u32, gray_scale: bool, seed: Option<i32>) -> Atari {
+    pub fn new(game: &str, max_frames: u32, gray_scale: bool, seed: Option<i32>) -> Atari {
         // save ROM to temp dir
 		let dir = tempdir::TempDir::new("ale-rs").expect("Create temp dir failed");
+		let rom = BundledRom::name2rom(game);
 		let des_path = dir.path().join(rom.filename());
         let src_path = std::env::current_dir()
             .expect("Cannot find project path")
@@ -99,7 +100,6 @@ impl Atari {
         }
     }
 
-
     pub fn reset(&mut self) {
         unsafe {
             reset_game(self.ale);
@@ -133,10 +133,6 @@ impl Atari {
             }
         }
         self.screen_data.clone()
-    }
-
-    pub fn action_dim(&mut self) -> usize {
-        self.action_set.len()
     }
 
 	// return (height, width) of screen
@@ -278,6 +274,122 @@ pub enum BundledRom {
 }
 
 impl BundledRom {
+
+	pub fn name2rom(name: &str) -> BundledRom {
+		use BundledRom::*;
+		match name {
+			"adventure" => Adventure,
+			"air_raid" => AirRaid,
+			"alien" => Alien,
+			"amidar" => Amidar,
+			"assault" => Assault,
+			"asterix" => Asterix,
+			"asteroids" => Asteroids,
+			"atlantis" => Atlantis,
+			"atlantis2" => Atlantis2,
+			"backgammon" => Backgammon,
+			"bank_heist" => BankHeist,
+			"basic_math" => BasicMath,
+			"battle_zone" => BattleZone,
+			"beam_rider" => BeamRider,
+			"berzerk" => Berzerk,
+			"blackjack" => Blackjack,
+			"bowling" => Bowling,
+			"boxing" => Boxing,
+			"breakout" => Breakout,
+			"carnival" => Carnival,
+			"casino" => Casino,
+			"centipede" => Centipede,
+			"chopper_command" => ChopperCommand,
+			"combat" => Combat,
+			"crazy_climber" => CrazyClimber,
+			"crossbow" => Crossbow,
+			"darkchambers" => Darkchambers,
+			"defender" => Defender,
+			"demon_attack" => DemonAttack,
+			"donkey_kong" => DonkeyKong,
+			"double_dunk" => DoubleDunk,
+			"earthworld" => Earthworld,
+			"elevator_action" => ElevatorAction,
+			"enduro" => Enduro,
+			"entombed" => Entombed,
+			"et" => Et,
+			"fishing_derby" => FishingDerby,
+			"flag_capture" => FlagCapture,
+			"freeway" => Freeway,
+			"frogger" => Frogger,
+			"frostbite" => Frostbite,
+			"galaxian" => Galaxian,
+			"gopher" => Gopher,
+			"gravitar" => Gravitar,
+			"hangman" => Hangman,
+			"haunted_house" => HauntedHouse,
+			"hero" => Hero,
+			"human_cannonball" => HumanCannonball,
+			"ice_hockey" => IceHockey,
+			"jamesbond" => Jamesbond,
+			"journey_escape" => JourneyEscape,
+			"joust" => Joust,
+			"kaboom" => Kaboom,
+			"kangaroo" => Kangaroo,
+			"keystone_kapers" => KeystoneKapers,
+			"king_kong" => KingKong,
+			"klax" => Klax,
+			"koolaid" => Koolaid,
+			"krull" => Krull,
+			"kung_fu_master" => KungFuMaster,
+			"laser_gates" => LaserGates,
+			"lost_luggage" => LostLuggage,
+			"mario_bros" => MarioBros,
+			"maze_craze" => MazeCraze,
+			"miniature_golf" => MiniatureGolf,
+			"montezuma_revenge" => MontezumaRevenge,
+			"mr_do" => MrDo,
+			"ms_pacman" => MsPacman,
+			"name_this_game" => NameThisGame,
+			"othello" => Othello,
+			"pacman" => Pacman,
+			"phoenix" => Phoenix,
+			"pitfall" => Pitfall,
+			"pitfall2" => Pitfall2,
+			"pong" => Pong,
+			"pooyan" => Pooyan,
+			"private_eye" => PrivateEye,
+			"qbert" => Qbert,
+			"riverraid" => Riverraid,
+			"road_runner" => RoadRunner,
+			"robotank" => Robotank,
+			"seaquest" => Seaquest,
+			"sir_lancelot" => SirLancelot,
+			"skiing" => Skiing,
+			"solaris" => Solaris,
+			"space_invaders" => SpaceInvaders,
+			"space_war" => SpaceWar,
+			"star_gunner" => StarGunner,
+			"superman" => Superman,
+			"surround" => Surround,
+			"tennis" => Tennis,
+			"tetris" => Tetris,
+			"tic_tac_toe_3d" => TicTacToe3d,
+			"time_pilot" => TimePilot,
+			"trondead" => Trondead,
+			"turmoil" => Turmoil,
+			"tutankham" => Tutankham,
+			"up_n_down" => UpNDown,
+			"venture" => Venture,
+			"video_checkers" => VideoCheckers,
+			"video_chess" => VideoChess,
+			"video_cube" => VideoCube,
+			"video_pinball" => VideoPinball,
+			"warlords" => Warlords,
+			"wizard_of_wor" => WizardOfWor,
+			"word_zapper" => WordZapper,
+			"yars_revenge" => YarsRevenge,
+			"zaxxon" => Zaxxon,
+			_ => panic!("ROM {} not supported", name)
+		}
+	}
+
 	/// Returns the filename that the ROM should be named, in order for the ALE to pick up on it and
 	/// use the correct settings.
 	pub fn filename(&self) -> &'static str {
