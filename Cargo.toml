@@ -1,0 +1,11 @@
+[package]
+name = "ale-env"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[build-dependencies]
+bindgen = "0.70.1"
+cmake = "0.1.52"
+tempdir = "0.3.7"

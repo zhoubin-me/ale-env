@@ -1,0 +1,4 @@
+[submodule "ale"]
+	path = ale
+	url = https://github.com/zhoubin-me/Arcade-Learning-Environment.git
+	branch = dev
