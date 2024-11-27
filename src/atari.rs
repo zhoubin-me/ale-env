@@ -2,6 +2,7 @@ use std::path::Path;
 use std::ffi::CString;
 use std::os::raw::c_int;
 use std::ptr::null_mut;
+use std::env;
 use tempdir;
 
 pub use crate::bindings::root::{
@@ -38,15 +39,16 @@ impl Atari {
         let rom = BundledRom::name2rom(game);
         let des_path = dir.path().join(rom.filename());
 
-        let cur_file = file!();
-        let src_path = Path::new(cur_file)
+        let absolute_path = Path::new(env!("CARGO_MANIFEST_DIR")).join(file!());
+        // println!("Absolute path: {}", absolute_path.display());
+        let src_path = absolute_path
             .parent()
             .expect("Cannot find src directory")
             .parent()
             .expect("Cannot find project directory")
             .join("roms")
             .join(rom.filename());
-        println!("{:?}", src_path);
+        // println!("{:?}", src_path);
         std::fs::copy(&src_path, &des_path).expect("Copy ROM to tempdir failed");
 
         let (ale, action_set, screen_size) = unsafe {
