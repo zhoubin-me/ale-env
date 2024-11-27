@@ -23,7 +23,7 @@ bash scripts/convert_frames_to_video.sh
 
 Run test for FPS benchmark
 ```bash
-cargo test -- --nocapture
+cargo test --release -- --nocapture
 ```
 
 
