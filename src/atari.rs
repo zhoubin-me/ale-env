@@ -40,7 +40,6 @@ impl Atari {
         let des_path = dir.path().join(rom.filename());
 
         let absolute_path = Path::new(env!("CARGO_MANIFEST_DIR")).join(file!());
-        // println!("Absolute path: {}", absolute_path.display());
         let src_path = absolute_path
             .parent()
             .expect("Cannot find src directory")
@@ -48,7 +47,6 @@ impl Atari {
             .expect("Cannot find project directory")
             .join("roms")
             .join(rom.filename());
-        // println!("{:?}", src_path);
         std::fs::copy(&src_path, &des_path).expect("Copy ROM to tempdir failed");
 
         let (ale, action_set, screen_size) = unsafe {
