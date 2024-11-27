@@ -3,6 +3,8 @@ use std::{fs, env};
 use ale_env::{Atari, BundledRom};
 use rand::{thread_rng, Rng};
 use image::{save_buffer, ColorType};
+use std::time::Instant;
+
 fn main () {
 
     let mut env = Atari::new(
@@ -12,20 +14,21 @@ fn main () {
         Some(42)
     );
     let n = env.action_dim();
+    let steps = 10000;
     let mut images = vec![];
-
     env.reset();
     images.push(env.obs());
+    
 
-    for step in 0..3000 {
+    let start = Instant::now();
+    for _ in 0..steps {
         let action = thread_rng().gen_range(0..n);
-        let info = env.step(action);
+        env.step(action);
         images.push(env.obs());
-        if step == 2999 {
-            dbg!(info);
-        }
     }
-    dbg!(env.get_action_set());
+    let duration = start.elapsed();
+    println!("FPS: {:.0}", steps as f32 / duration.as_secs_f32());
+    println!("action set:{:?}", env.get_action_set());
 
     let (height, width) = env.screen_dim();
     let current_dir = env::current_dir().expect("Failed to get current directory");

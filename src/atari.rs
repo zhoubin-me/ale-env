@@ -148,6 +148,10 @@ impl Atari {
 		self.action_set.clone()
 	}
 
+	pub fn get_score(&mut self) -> i32 {
+		self.score
+	}
+
 	pub fn close(&mut self) {
 		unsafe {ALE_del(self.ale);}
 	}
