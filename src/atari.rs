@@ -37,8 +37,10 @@ impl Atari {
         let dir = tempdir::TempDir::new("ale-rs").expect("Create temp dir failed");
         let rom = BundledRom::name2rom(game);
         let des_path = dir.path().join(rom.filename());
-        let proj_dir = std::env::var("CARGO_MANIFEST_DIR").expect("Cannot open project dir");
-        let src_path = Path::new(&proj_dir)
+        let cur_file = file!();
+        let src_path = Path::new(cur_file)
+            .parent()
+            .expect("Cannot find project directory")
             .join("roms")
             .join(rom.filename());
         std::fs::copy(&src_path, &des_path).expect("Copy ROM to tempdir failed");
