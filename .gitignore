@@ -2,3 +2,5 @@ target
 roms
 examples/frames
 *.mp4
+nohup.out
+Cargo.lock

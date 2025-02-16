@@ -1,8 +1,8 @@
-use std::path::Path;
+use std::env;
 use std::ffi::CString;
 use std::os::raw::c_int;
+use std::path::Path;
 use std::ptr::null_mut;
-use std::env;
 use tempdir;
 
 pub use crate::bindings::root::{
@@ -31,6 +31,7 @@ pub struct Atari {
 }
 
 unsafe impl Send for Atari {}
+unsafe impl Sync for Atari {}
 
 impl Atari {
     pub fn new(game: &str, max_frames: u32, gray_scale: bool, seed: Option<i32>) -> Atari {

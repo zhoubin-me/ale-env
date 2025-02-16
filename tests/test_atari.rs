@@ -1,4 +1,4 @@
-use ale_env::Atari;
+use ale_env::{Atari, VecAtari};
 use colored::*;
 use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
@@ -40,7 +40,7 @@ fn test_atari() {
 
 #[test]
 fn test_parallel_atari() {
-    let num_envs = 16;
+    let num_envs = 32;
     let seed = 42;
     let steps = 10000;
     let mut envs = vec![];
@@ -77,5 +77,27 @@ fn test_parallel_atari() {
         duration,
         (steps * num_envs) as f32 / duration.as_secs_f32(),
         total_reward
+    );
+}
+
+#[test]
+fn test_vec_atari() {
+    let num_envs = 32;
+    let seed = 42;
+    let steps = 10000;
+    let mut envs = VecAtari::new(num_envs, "breakout", 108_000, true, seed);
+    let now = Instant::now();
+    for _ in 0..steps {
+        let actions = (0..num_envs)
+            .map(|_| *envs.action_space().choose(&mut rand::thread_rng()).unwrap())
+            .collect();
+        envs.step(actions);
+    }
+    let duration = now.elapsed();
+    println!(
+        "{}: time elapsed {:?}, average fps {:.0}",
+        "Vec Atari".blue().bold(),
+        duration,
+        (steps * num_envs) as f32 / duration.as_secs_f32()
     );
 }

@@ -9,9 +9,10 @@ cmake = "0.1.52"
 
 [dependencies]
 tempdir = "0.3.7"
+threadpool = "1.8.1"
+rand = "0.8.5"
 
 [dev-dependencies]
 colored = "2.1.0"
 image = "0.25.5"
-rand = "0.8.5"
 rayon = "1.10.0"
