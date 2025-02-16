@@ -64,9 +64,9 @@ impl VecAtari {
             let sender = self.sender.clone();
             self.pool.execute(move || {
                 let mut env = env.lock().unwrap();
-                let (mut reward, mut terminal, mut truncation, mut life_loss) = (0, false, false, false);
-                // let (mut reward, mut terminal, mut truncation, mut life_loss) = env.step(action);
-
+                let (mut reward, mut terminal, mut truncation, mut life_loss) = env.step(action);
+                
+                // let (mut reward, mut terminal, mut truncation, mut life_loss) = (0, false, false, false);
                 // for _ in 0..4 {
                 //     let (r, t, tr, l) = env.step(action);
                 //     reward += r;
@@ -82,16 +82,17 @@ impl VecAtari {
                     env.reset();
                 }
 
-                if terminal || truncation || life_loss {
-                    let steps = rand::thread_rng().gen_range(0..30);
-                    for _ in 0..steps {
-                        env.step(0);
-                    }
-                    if fire_reset {
-                        env.step(1);
-                        env.step(2);
-                    }
-                }
+                // if terminal || truncation || life_loss {
+                //     let steps = rand::thread_rng().gen_range(0..30);
+                //     for _ in 0..steps {
+                //         env.step(0);
+                //     }
+                //     if fire_reset {
+                //         env.step(1);
+                //         env.step(2);
+                //     }
+                // }
+                
                 let obs = env
                     .obs()
                     .chunks(env.screen_dim().1)
