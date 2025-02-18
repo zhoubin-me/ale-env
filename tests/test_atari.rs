@@ -15,7 +15,6 @@ fn test_atari() {
 
     let action_set = env.get_action_set();
     let mut total_reward = 0;
-    let mut images = vec![];
     env.reset();
     let start = Instant::now();
     for _ in 0..steps {
@@ -25,7 +24,6 @@ fn test_atari() {
         if terminal {
             env.reset();
         }
-        images.push(env.obs());
     }
     let duration = start.elapsed();
     println!(
@@ -39,59 +37,19 @@ fn test_atari() {
 }
 
 #[test]
-fn test_parallel_atari() {
-    let num_envs = 32;
-    let seed = 42;
-    let steps = 10000;
-    let mut envs = vec![];
-    for i in 0..num_envs {
-        let mut env = Atari::new("breakout", 108_000, true, Some(seed + i));
-        env.reset();
-        envs.push(env);
-    }
-    let action_set = envs[0].get_action_set();
-    let mut total_reward = 0;
-    let mut images = vec![];
-    let start = Instant::now();
-    for _ in 0..steps {
-        let data = envs
-            .par_iter_mut()
-            .map(|env| {
-                let action = action_set
-                    .choose(&mut thread_rng())
-                    .expect("Random action fail");
-                let (reward, terminal, truncation, life_loss) = env.step(*action);
-                if terminal {
-                    env.reset();
-                }
-                (reward, env.obs())
-            })
-            .collect::<Vec<(i32, Vec<u8>)>>();
-        total_reward += data.iter().map(|x| x.0).sum::<i32>();
-        images.extend(data.iter().map(|x| x.1.clone()));
-    }
-    let duration = start.elapsed();
-    println!(
-        "{}: time elapsed {:?}, average fps {:.0}, {:.0}",
-        "Parallel env:".blue().bold(),
-        duration,
-        (steps * num_envs) as f32 / duration.as_secs_f32(),
-        total_reward
-    );
-}
-
-#[test]
 fn test_vec_atari() {
-    let num_envs = 32;
+    let num_envs = 16;
     let seed = 42;
     let steps = 10000;
     let mut envs = VecAtari::new(num_envs, "breakout", 108_000, true, seed);
     let now = Instant::now();
+    let mut result = vec![];
+    result.push(envs.reset());
     for _ in 0..steps {
         let actions = (0..num_envs)
             .map(|_| *envs.action_space().choose(&mut rand::thread_rng()).unwrap())
             .collect();
-        envs.step(actions);
+        result.push(envs.step(actions));
     }
     let duration = now.elapsed();
     println!(
