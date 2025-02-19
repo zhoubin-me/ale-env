@@ -3,6 +3,11 @@ name = "ale-env"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "ale_env"
+crate-type = ["cdylib"]
+
+
 [build-dependencies]
 bindgen = "0.70.1"
 cmake = "0.1.52"
@@ -11,8 +16,9 @@ cmake = "0.1.52"
 tempdir = "0.3.7"
 threadpool = "1.8.1"
 rand = "0.8.5"
+pyo3 = { version = "0.23.4", features = ["extension-module"] }
+
 
 [dev-dependencies]
 colored = "2.1.0"
 image = "0.25.5"
-rayon = "1.10.0"

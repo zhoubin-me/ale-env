@@ -1,3 +1,4 @@
+use pyo3::prelude::*;
 use std::env;
 use std::ffi::CString;
 use std::os::raw::c_int;
@@ -18,6 +19,7 @@ pub use crate::bindings::root::{
     setString, ALE_del, ALE_new,
 };
 
+#[pyclass]
 pub struct Atari {
     ale: *mut ALEInterface,
     action_set: Vec<i32>,
@@ -33,7 +35,9 @@ pub struct Atari {
 unsafe impl Send for Atari {}
 unsafe impl Sync for Atari {}
 
+#[pymethods]
 impl Atari {
+    #[new]
     pub fn new(game: &str, max_frames: u32, gray_scale: bool, seed: Option<i32>) -> Atari {
         // save ROM to temp dir
         let dir = tempdir::TempDir::new("ale-rs").expect("Create temp dir failed");
@@ -150,6 +154,12 @@ impl Atari {
         unsafe {
             ALE_del(self.ale);
         }
+    }
+}
+
+impl Drop for Atari {
+    fn drop(&mut self) {
+        self.close();
     }
 }
 

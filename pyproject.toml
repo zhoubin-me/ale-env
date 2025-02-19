@@ -1,0 +1,15 @@
+[project]
+name = "ale-env"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "maturin[patchelf]>=1.8.2",
+    "numpy>=2.2.3",
+]
+
+
+[build-system]
+requires = ["maturin>=1,<2"]
+build-backend = "maturin"
